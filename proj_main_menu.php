@@ -28,6 +28,10 @@
             <h2>View Data</h2>
         </a>
 
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/user-view.php">
+            <h2>View Cruise Information with Ticket Number</h2>
+        </a>
+
         <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
             <h2>Update Data</h2>
         </a>
@@ -40,8 +44,8 @@
             <h2>Average salary for each cruise ship</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
-            <h2>Crew members doing at least X tasks</h2>
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/at_least_x_rooms.php">
+            <h2>Crew members cleaning at least X rooms</h2>
         </a>
 
         <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
