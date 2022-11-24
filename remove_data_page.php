@@ -42,29 +42,30 @@
         }
     }
 
-    // function executePlainSQL($cmdstr)
-    // {
-    //     global $db_conn, $success;
+    function executePlainSQL($cmdstr)
+    {
+        global $db_conn, $success;
 
-    //     $statement = oci_parse($db_conn, $cmdstr);
-    
-    //     if (!$statement) {
-    //         echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
-    //         $e = oci_error($db_conn); // For OCIParse errors pass the connection handle
-    //         echo htmlentities($e['message']);
-    //         $success = False;
-    //     }
+        $statement = oci_parse($db_conn, $cmdstr);
 
-    //     $r = oci_execute($statement, OCI_NO_AUTO_COMMIT);
-    //     if (!$r) {
-    //         echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
-    //         $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-    //         echo htmlentities($e['message']);
-    //         $success = False;
-    //     }
+        if (!$statement) {
+            echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+            $e = oci_error($db_conn); // For OCIParse errors pass the connection handle
+            echo htmlentities($e['message']);
+            $success = False;
+        }
 
-    //     return $statement;
-    // }
+        $r = oci_execute($statement, OCI_NO_AUTO_COMMIT);
+        if (!$r) {
+            echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+            $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+            echo htmlentities($e['message']);
+            $success = False;
+        }
+        
+        echo "<center><br>Successfully deleted row!</br></center>";
+        return $statement;
+    }
 
     function connectToDB()
     {
@@ -103,25 +104,12 @@
             $id2 = $_POST['id2'];
             [$key1, $key2] = getTableKeys($table);
             if ($key1 && $key2) {
-                $statement = oci_parse($db_conn, "DELETE FROM $table WHERE $key1 = '$id1' AND $key2 = '$id2'");
-                
+                $cmdstr = "DELETE FROM $table WHERE $key1 = '$id1' AND $key2 = '$id2'";
             } else {
-                $statement = oci_parse($db_conn, "DELETE FROM $table WHERE $key1 = '$id1'");
+                $cmdstr = "DELETE FROM $table WHERE $key1 = '$id1'";
             }
-            $r = oci_execute($statement, OCI_DEFAULT);
-            if (!$r) {
-                echo "<center>";
-                echo "<br>Cannot execute the command<br>";
-                echo "</center>";
-                $e = oci_error($statement);
-                echo htmlentities($e['message']);
-                $success = False;
-            } else {
-                oci_commit($db_conn);
-                echo "<center>";
-                echo "successfully deleted row!";
-                echo "</center>";
-            };
+            executePlainSQL($cmdstr);
+            oci_commit($db_conn);
             disconnectFromDB();
         }
     }
