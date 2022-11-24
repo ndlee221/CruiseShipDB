@@ -108,14 +108,19 @@
             } else {
                 $statement = oci_parse($db_conn, "DELETE FROM $table WHERE $key1 = '$id1'");
             }
-            $r = oci_execute($statement, OCI_COMMIT_ON_SUCCESS);
+            $r = oci_execute($statement, OCI_DEFAULT);
             if (!$r) {
+                echo "<center>";
                 echo "<br>Cannot execute the command<br>";
+                echo "</center>";
                 $e = oci_error($statement);
                 echo htmlentities($e['message']);
                 $success = False;
             } else {
+                oci_commit($db_conn);
+                echo "<center>";
                 echo "successfully deleted row!";
+                echo "</center>";
             };
             disconnectFromDB();
         }
