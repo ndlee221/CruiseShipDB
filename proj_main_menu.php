@@ -15,10 +15,11 @@
   Apache server can run it, and you must rename it to have a ".php"
   extension.  You must also change the username and password on the
   OCILogon below to be your ORACLE username and password -->
-  <html>
-    <center>
+<html>
+<center>
+
     <body>
-        <h1 > Cruise Analyser </h1>
+        <h1> Cruise Analyser </h1>
         <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
             <h2>Add Data</h2>
         </a>
@@ -50,41 +51,7 @@
         <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
             <h2>Passenger that has done every activity</h2>
         </a>
-    </center>
-        <h2>Insert Values into DemoTable</h2>
-        <form method="POST" action="modified-oracle-test.php"> <!--refresh page when submitted-->
-            <input type="hidden" id="insertQueryRequest" name="insertQueryRequest">
-            Number: <input type="text" name="insNo"> <br /><br />
-            Name: <input type="text" name="insName"> <br /><br />
+</center>
+</body>
 
-            <input type="submit" value="Insert" name="insertSubmit"></p>
-        </form>
-
-        <hr />
-
-        <h2>Update Name in DemoTable</h2>
-        <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
-
-        <form method="POST" action="modified-oracle-test.php"> <!--refresh page when submitted-->
-            <input type="hidden" id="updateQueryRequest" name="updateQueryRequest">
-            Old Name: <input type="text" name="oldName"> <br /><br />
-            New Name: <input type="text" name="newName"> <br /><br />
-
-            <input type="submit" value="Update" name="updateSubmit"></p>
-        </form>
-
-        <hr />
-
-        <h2>Count the Tuples in DemoTable</h2>
-        <form method="GET" action="modified-oracle-test.php"> <!--refresh page when submitted-->
-            <input type="hidden" id="countTupleRequest" name="countTupleRequest">
-            <input type="submit" name="countTuples"></p>
-        </form>
-
-        <h2>Print Rows of DemoTable</h2>
-        <form method="GET" action="modified-oracle-test.php"> <!--refresh page when submitted-->
-            <input type="hidden" id="fetchTableRequest" name="fetchTableRequest">
-            <input type="submit" name="fetchTable"></p>
-        </form>
-	</body>
 </html>

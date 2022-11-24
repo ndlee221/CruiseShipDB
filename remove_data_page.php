@@ -42,42 +42,41 @@
         }
     }
 
-    function executePlainSQL($cmdstr)
-    {
-        global $db_conn, $success;
+    // function executePlainSQL($cmdstr)
+    // {
+    //     global $db_conn, $success;
 
-        $statement = OCIParse($db_conn, $cmdstr);
-        echo $statement;
+    //     $statement = oci_parse($db_conn, $cmdstr);
     
-        if (!$statement) {
-            echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
-            $e = OCI_Error($db_conn); // For OCIParse errors pass the connection handle
-            echo htmlentities($e['message']);
-            $success = False;
-        }
+    //     if (!$statement) {
+    //         echo "<br>Cannot parse the following command: " . $cmdstr . "<br>";
+    //         $e = oci_error($db_conn); // For OCIParse errors pass the connection handle
+    //         echo htmlentities($e['message']);
+    //         $success = False;
+    //     }
 
-        $r = OCIExecute($statement, OCI_DEFAULT);
-        if (!$r) {
-            echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
-            $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
-            echo htmlentities($e['message']);
-            $success = False;
-        }
+    //     $r = oci_execute($statement, OCI_NO_AUTO_COMMIT);
+    //     if (!$r) {
+    //         echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
+    //         $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
+    //         echo htmlentities($e['message']);
+    //         $success = False;
+    //     }
 
-        return $statement;
-    }
+    //     return $statement;
+    // }
 
     function connectToDB()
     {
         global $db_conn;
-        $db_conn = OCILogon("ora_ngynjsn", "a11170081", "dbhost.students.cs.ubc.ca:1522/stu");
+        $db_conn = oci_connect("ora_ngynjsn", "a11170081", "dbhost.students.cs.ubc.ca:1522/stu");
 
         if ($db_conn) {
             debugAlertMessage("Database is Connected");
             return true;
         } else {
             debugAlertMessage("Cannot connect to Database");
-            $e = OCI_Error(); // For OCILogon errors pass no handle
+            $e = oci_error(); // For OCILogon errors pass no handle
             echo htmlentities($e['message']);
             return false;
         }
@@ -88,13 +87,13 @@
         global $db_conn;
 
         debugAlertMessage("Disconnect from Database");
-        OCILogoff($db_conn);
+        oci_close($db_conn);
     }
 
     function handleRemoveDataRequest()
     {
         if (connectToDB()) {
-            global $db_conn;
+            global $db_conn, $success;
             foreach ($_POST as $elem) {
                 if ($elem !== $_POST['id1'] && $elem !== $_POST['id2']) {
                     $table = substr($elem, 12); // "Remove from <TABLENAME>"
@@ -102,17 +101,22 @@
             }
             $id1 = $_POST['id1'];
             $id2 = $_POST['id2'];
-            // echo "table name: " . $table . "</br>";
-            // echo "id 1: " . $id1 . "</br>";
-            // echo "id 2: " . $id2 . "</br>";
             [$key1, $key2] = getTableKeys($table);
             if ($key1 && $key2) {
-                $result = executePlainSQL("DELETE FROM $table WHERE $key1 = $id1 AND $key2 = $id2");
+                $statement = oci_parse($db_conn, "DELETE FROM $table WHERE $key1 = '$id1' AND $key2 = '$id2'");
+                
             } else {
-                $result = executePlainSQL("DELETE FROM $table WHERE $key1 = $id1");
+                $statement = oci_parse($db_conn, "DELETE FROM $table WHERE $key1 = '$id1'");
             }
-
-            OCICommit($db_conn);
+            $r = oci_execute($statement, OCI_COMMIT_ON_SUCCESS);
+            if (!$r) {
+                echo "<br>Cannot execute the command<br>";
+                $e = oci_error($statement);
+                echo htmlentities($e['message']);
+                $success = False;
+            } else {
+                echo "successfully deleted row!";
+            };
             disconnectFromDB();
         }
     }
