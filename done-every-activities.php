@@ -85,7 +85,7 @@
             echo "<tr><th>passengerID</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["passengerID"] . "</td></tr>"; //or just use "echo $row[0]"
+                echo "<tr><td>" . $row["PASSENGERID"] . "</td></tr>"; //or just use "echo $row[0]"
             }
 
             echo "</table>";
