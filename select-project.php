@@ -5,11 +5,15 @@
             button {
                 display: block;
             }
+
+            input[type=text] {
+                width: 20%;
+            }
         </style>
     </head>
     <body>
         <h2>Page to query and modify data</h2>
-        <form method="GET">
+        <form method="POST" action="select-project.php">
             <label for="table">Select table to query: </label>
             <select name="table" id="table">
                 <option value="ticket">Ticket</option>
@@ -93,39 +97,11 @@
             return $statement;
         }
 
-        /* function handleRequest() {
-            global $db_conn, $ticketID;
-            $passengerInfo = executePlainSQL("SELECT c.name, t.ticketClass, p.roomNo
-                                           FROM Ticket t, CruizeShip c, PassengersStayAt p
-                                           WHERE t.ticketID = {$ticketID} AND 
-                                           t.hullID = c.hullID AND 
-                                           t.passengerID = p.passengerID");
-            $activities = executePlainSQL("SELECT a
-                                           FROM Ticket t, Activities a
-                                           WHERE t.ticketID = {$ticketID} AND t.hullID = a.hullID");
-            $restaurants = executePlainSQL("SELECT r
-                                            FROM Ticket t, Restaurants r
-                                            WHERE t.ticketID = {$ticketID} AND t.hullID = r.hullID");
-            printResult($passengerInfo, $activities, $restaurants);
-        } */
-
         function generateAttributesOptions($num_columns, $selected_table) {
             for ($i = 1; $i <= $num_columns; $i++) {
                 $column_name = oci_field_name($selected_table, $i);
                 echo '<option value="' . $column_name . '">' . $column_name . '</option>';
             };
-        }
-
-        function generateOperators($i) {
-            echo '<select name="operator' . $i . '">';
-            echo '<option value="=">=</option>';
-            echo '<option value=">">></option>';
-            echo '<option value="<"><</option>';
-            echo '<option value=">=">>=</option>';
-            echo '<option value="<="><=</option>';
-            echo '<option value="!=">!=</option>';
-            echo '<option value="LIKE">LIKE</option>';
-            echo '</select>';
         }
 
         function printSelections($selected_table) {
@@ -140,33 +116,22 @@
             echo '</select>';
             echo '<br>';
             echo '<br>';
-            echo '<p>Choose conditions</p>';
-            for ($i = 1; $i <= $num_conditions; $i++) {
-                echo "<p>Attribute $i + Condition $i";
-                echo '<br>';
-                echo '<select name="attribute' . $i . '">';
-                generateAttributesOptions($num_columns, $selected_table);
-                echo '</select>';
-                generateOperators($i);
-                echo '<input type="text" name="condition' . $i . '">';
-            }
-            echo '<input type="hidden" name="table" value="' . $_GET["table"] . '">';
-            //echo '<input type="hidden" name="numOfConditions" value="' . $num_conditions . '">';
-            echo '</form>';
-            echo '<form method="GET" action="query-modify.php">';
-            //echo '<input type="hidden" name="numCondition" value=' . ($num_conditions + 1) . '">';
-            echo '<input type="submit" name="addCondition" value="Add attributes to query">';
-            echo '</form>';
+            echo '<label for="conditions">Input conditions: </label>';
+            echo '<input type="text" id="conditions" name="conditions" placeholder="e.g. age > 20 and hullID = 123456">';
+            echo '<br>';
+            echo '<br>';
+            echo '<input type="hidden" name="table" value="' . $_POST['table'] . '">';
             echo '<input type="submit" name="querySubmit" form="queryform">';
+            echo '</form>';
         }
 
         function getTable() {
-            $table = $_GET['table'];
+            $table = $_POST['table'];
             $selected_table = executePlainSQL("SELECT * FROM {$table}");
             printSelections($selected_table);
         }
 
-        if (isset($_GET["table"]) && connectToDB()) {
+        if (isset($_POST["table"]) && connectToDB()) {
             getTable();
             disconnectFromDB();
         }
