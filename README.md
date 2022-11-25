@@ -1,3 +1,1 @@
-Hello
-This is West
-Hi West
+No extra information.
