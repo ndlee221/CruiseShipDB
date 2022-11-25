@@ -235,11 +235,15 @@ values ('4', 'Daniel Jane', '29', 'v3j', '68232 64 Avenue');
 insert into passengers
 values ('5', 'Alex Green', '33', 'v5z', '24521 120A Street');
 insert into passengers
-values ('6', 'Adrian Chun', '25', 'v3n', '43262 80 Avenue');
+values ('6', 'Adrian Chun', '60', 'v3n', '43262 80 Avenue');
 insert into passengers
 values ('7', 'Ashley Campbell', '31', 'v5z', '14461 96 Street');
 insert into passengers
-values ('8', 'David Campbell', '32', 'v5z', '14461 96 Street');
+values ('8', 'David Campbell', '32', 'v5z', '23232 100 Street');
+insert into passengers
+values ('9', 'Snoopy Binoo', '31', 'v3t', '23022 156 Street');
+insert into passengers
+values ('10', 'Joshua Asfa', '60', 'v3n', '76493 94 Avenue');
 
 insert into ticket
 values ('1', 'luxury', '6/23/22', '1', '1');
@@ -257,6 +261,10 @@ insert into ticket
 values ('7', 'suite', '10/21/22', '5', '7');
 insert into ticket
 values ('8', 'suite', '10/21/22', '5', '8');
+insert into ticket
+values ('15', 'luxury', '6/30/22', '1', '9');
+insert into ticket
+values ('20', 'economy', '6/30/22', '1', '10');
 
 insert into pets
 values ('1', 'Bogey', 'Golden Retriever');
@@ -274,6 +282,10 @@ values ('PC1-01', '4', 'double kings', '1');
 insert into hospitality
 values ('PC1-02', '2', 'double twin', '1');
 insert into hospitality
+values ('PC1-03', '4', 'double kings', '1');
+insert into hospitality
+values ('PC1-04', '2', 'double twin', '1');
+insert into hospitality
 values ('DCL2-01', '2', 'single queen', '2');
 insert into hospitality
 values ('VC3-01', '1', 'single twin', '3');
@@ -286,6 +298,10 @@ insert into passengersstayat
 values ('1', 'PC1-01');
 insert into passengersstayat
 values ('2', 'PC1-02');
+insert into passengersstayat
+values ('9', 'PC1-03');
+insert into passengersstayat
+values ('10', 'PC1-04');
 insert into passengersstayat
 values ('3', 'DCL2-01');
 insert into passengersstayat
@@ -410,11 +426,23 @@ insert into generalstaff
 values ('16', 'Jinmin', 'Housekeeping');
 insert into generalstaff
 values ('17', 'Elon', 'Activity Manager');
+insert into generalstaff
+values ('29', 'Johnathon', 'Housekeeping');
+insert into generalstaff
+values ('30', 'Rachel', 'Housekeeping');
+insert into generalstaff
+values ('35', 'Jasmine', 'Housekeeping');
+insert into generalstaff
+values ('39', 'Mary', 'Housekeeping');
 
 insert into managehospitalities
 values ('10', 'PC1-01');
 insert into managehospitalities
 values ('10', 'PC1-02');
+insert into managehospitalities
+values ('30', 'PC1-03');
+insert into managehospitalities
+values ('35', 'PC1-04');
 insert into managehospitalities
 values ('10', 'KC5-01');
 insert into managehospitalities
@@ -423,6 +451,7 @@ insert into managehospitalities
 values ('11', 'VC3-01');
 insert into managehospitalities
 values ('12', 'CC4-01');
+
 
 insert into manageactivities
 values ('13', 'PC1-DANCE1');
