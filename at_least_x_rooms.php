@@ -76,10 +76,10 @@
     { //prints results from a select statement
         echo '<center>';
         echo '<table>';
-        echo "<tr><th>crewID</th><th>count</th></tr>";
+        echo "<tr><th>crewID</th><th>Name</th><th>count</th></tr>";
         
         while ($row = oci_fetch_array($result, OCI_BOTH)) {
-            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td></tr>";
+            echo "<tr><td>" . $row[0] . "</td><td>" . $row[1] . "</td><td>" . $row[2] . "</td></tr>";
         }
         
         echo "</table>";
@@ -92,8 +92,14 @@
 
         if (connectToDB()) {
             $val = $_GET['xVal'];
-            $command = "SELECT crewID, count(*) FROM managehospitalities group by crewID having count(*) >= $val";
-            $result = executePlainSQL($command);
+            $command1 = "SELECT crewID, count(*) AS rooms
+                        FROM managehospitalities 
+                        GROUP BY crewID 
+                        HAVING count(*) >= $val";
+            $command2 = "SELECT temp.crewID, gs.staffName, temp.rooms
+                        FROM ($command1) temp, generalstaff gs
+                        WHERE temp.crewID = gs.crewID";
+            $result = executePlainSQL($command2);
             printResult($result);
             oci_commit($db_conn);
             disconnectFromDB();
