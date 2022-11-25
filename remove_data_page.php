@@ -61,9 +61,9 @@
             $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
             echo htmlentities($e['message']);
             $success = False;
+        } else {
+            echo "<center><br>Successfully deleted row!</br></center>";
         }
-        
-        echo "<center><br>Successfully deleted row!</br></center>";
         return $statement;
     }
 
