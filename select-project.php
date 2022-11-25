@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>Query and modify data</title>
+        <title>Project and select data</title>
         <style>
             button {
                 display: block;
@@ -12,7 +12,7 @@
         </style>
     </head>
     <body>
-        <h2>Page to query and modify data</h2>
+        <h2>Page to project and select data</h2>
         <form method="POST" action="select-project.php">
             <label for="table">Select table to query: </label>
             <select name="table" id="table">
