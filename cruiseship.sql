@@ -1,21 +1,21 @@
-drop table ticket;
-drop table passengerlocation;
-drop table passengers;
-drop table pets;
-drop table cruiseship;
-drop table hospitality;
-drop table passengersstayat;
-drop table activities;
-drop table passengersparticipatein;
-drop table restaurants;
-drop table passengerseatat;
-drop table captain;
-drop table pilots;
-drop table generalstaffsalary;
-drop table generalstaff;
-drop table managehospitalities;
-drop table manageactivities;
 drop table managerestaurants;
+drop table manageactivities;
+drop table managehospitalities;
+drop table generalstaff;
+drop table pilots;
+drop table passengerseatat;
+drop table restaurants;
+drop table passengersparticipatein;
+drop table activities;
+drop table passengersstayat;
+drop table hospitality;
+drop table pets;
+drop table ticket;
+drop table passengers;
+drop table generalstaffsalary;
+drop table captain;
+drop table passengerlocation;
+drop table cruiseship;
 
 create table cruiseship(
     hullID int primary key,
@@ -49,7 +49,6 @@ create table passengers (
     postalCode char(6),
     passengerAddress char(20),
     foreign key (postalCode) references passengerlocation
-        ON DELETE NO ACTION ON UPDATE CASCADE
 );
 
 create table ticket (
@@ -59,10 +58,9 @@ create table ticket (
     hullID int not null,
     passengerID int not null,
     foreign key (hullID) references cruiseship,
-    foreign key (passengerID) references passengers 
+    foreign key (passengerID) references passengers
+        ON DELETE CASCADE
 );
-        -- ON DELETE NO ACTION ON UPDATE CASCADE,
-        -- ON DELETE NO ACTION ON UPDATE CASCADE
 
 create table pets (
     passengerID int,
@@ -70,8 +68,8 @@ create table pets (
     breed char(20),
     primary key (passengerID, petName),
     foreign key (passengerID) references passengers
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table hospitality(
     roomNo char(20) primary key,
@@ -79,18 +77,18 @@ create table hospitality(
     roomType char(20),
     hullID int,
     foreign key (hullID) references cruiseship
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table passengersstayat(
     passengerID int,
     roomNo char(20),
     primary key (passengerID, roomNo),
-    foreign key (passengerID) references passengers,
+    foreign key (passengerID) references passengers
+        ON DELETE CASCADE,
     foreign key (roomNo) references hospitality
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE,
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table activities(
     stall char(20) primary key,
@@ -99,18 +97,18 @@ create table activities(
     activityName char(20),
     hullID int,
     foreign key (hullID) references cruiseship
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table passengersparticipatein(
     stall char(20),
     passengerID int,
     primary key (stall, passengerID),
-    foreign key (stall) references activities,
+    foreign key (stall) references activities
+        ON DELETE CASCADE,
     foreign key (passengerID) references passengers
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE,
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table restaurants(
     stall char(20) primary key,
@@ -119,18 +117,18 @@ create table restaurants(
     restEnd int,
     hullID int,
     foreign key (hullID) references cruiseship
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table passengerseatat(
     passengerID int,
     stall char(20),
     primary key (passengerID, stall),
-    foreign key (passengerID) references passengers,
+    foreign key (passengerID) references passengers
+        ON DELETE CASCADE,
     foreign key (stall) references restaurants
+        ON DELETE CASCADE
 );
-        -- ON DELETE CASCADE ON UPDATE CASCADE,
-        -- ON DELETE CASCADE ON UPDATE CASCADE
 
 create table pilots(
     crewID int,
@@ -139,8 +137,6 @@ create table pilots(
     foreign key (crewID) references captain,
     foreign key (hullID) references cruiseship
 );
-        -- ON DELETE NO ACTION ON UPDATE CASCADE,
-        -- ON DELETE NO ACTION ON UPDATE CASCADE
 
 create table generalstaff(
     crewID int primary key,
@@ -148,8 +144,6 @@ create table generalstaff(
 	staffRole char(20),
 	foreign key (staffRole) references generalstaffsalary
 );
-		-- ON DELETE NO ACTION
-		-- ON UPDATE CASCADE
 
 create table managehospitalities(
     crewID int,
@@ -158,8 +152,6 @@ create table managehospitalities(
     foreign key (crewID) references generalstaff,
     foreign key (roomNum) references hospitality
 );
-        -- ON DELETE NO ACTION ON UPDATE CASCADE,
-        -- ON DELETE NO ACTION ON UPDATE CASCADE
 
 create table manageactivities(
     crewID int,
@@ -168,8 +160,6 @@ create table manageactivities(
     foreign key (crewID) references generalstaff,
     foreign key (stall) references activities
 );
-        -- ON DELETE NO ACTION ON UPDATE CASCADE,
-        -- ON DELETE NO ACTION ON UPDATE CASCADE
 
 create table managerestaurants(
     crewID int,
@@ -178,25 +168,18 @@ create table managerestaurants(
     foreign key (crewID) references generalstaff,
     foreign key (stall) references restaurants 
 );
-    -- ON DELETE NO ACTION ON UPDATE CASCADE,
-    -- ON DELETE NO ACTION ON UPDATE CASCADE
 
-insert into ticket
-values ('1', 'luxury', '6/23/22', '1', '1');
-insert into ticket
-values ('2', 'economy', '6/23/22', '1', '2');
-insert into ticket
-values ('3', 'suite', '9/20/22', '2', '3');
-insert into ticket
-values ('4', 'suite', '9/20/22', '2', '4');
-insert into ticket
-values ('5', 'economy', '9/25/22', '3', '5');
-insert into ticket
-values ('6', 'luxury', '10/15/22', '4', '6');
-insert into ticket
-values ('7', 'suite', '10/21/22', '5', '7');
-insert into ticket
-values ('8', 'suite', '10/21/22', '5', '8');
+
+insert into cruiseship 
+values ('1', 'Princess Cruises', 'Vancouver, BC', 'Vancouver Island, BC');
+insert into cruiseship 
+values ('2', 'Disney Cruise Line', 'Tsawwassen, BC', 'Tsawwassen, BC');
+insert into cruiseship 
+values ('3', 'Viking Cruises', 'Vancouver, BC', 'Vancouver, BC');
+insert into cruiseship 
+values ('4', 'Crystal Cruises', 'Vancouver, BC', 'Bowen Island, BC');
+insert into cruiseship 
+values ('5', 'Klondike Cruises', 'Nanaimo, BC', 'Vancouver, BC');
 
 insert into passengerlocation
 values ('v3t', 'surrey');
@@ -208,6 +191,38 @@ insert into passengerlocation
 values ('v3n', 'burnaby');
 insert into passengerlocation
 values ('v5z', 'vancouver');
+
+insert into captain
+values ('3', 'Masa', '120000', '1278');
+insert into captain
+values ('4', 'Brian', '160000', '2834');
+insert into captain
+values ('5', 'Alex', '170000', '7263');
+insert into captain
+values ('6', 'Mike', '200000', '4028');
+insert into captain
+values ('7', 'Chris', '110000', '3948');
+insert into captain
+values ('18', 'Bob Marley', '230000', '1278');
+insert into captain
+values ('19', 'Tupac', '90000', '2834');
+insert into captain
+values ('20', 'Snoop Dogg', '163000', '7263');
+insert into captain
+values ('21', '50 Cent', '125000', '4028');
+insert into captain
+values ('25', 'Jay Z', '103000', '3948');
+
+insert into generalstaffsalary
+values ('Housekeeping', '50000');
+insert into generalstaffsalary
+values ('Waiter', '55000');
+insert into generalstaffsalary
+values ('Cook', '70000');
+insert into generalstaffsalary
+values ('Activity Manager', '52000');
+insert into generalstaffsalary
+values ('Janitor', '60000');
 
 insert into passengers
 values ('1', 'Jason Smith', '21', 'v3t', '31232 140 Street');
@@ -226,6 +241,23 @@ values ('7', 'Ashley Campbell', '31', 'v5z', '14461 96 Street');
 insert into passengers
 values ('8', 'David Campbell', '32', 'v5z', '14461 96 Street');
 
+insert into ticket
+values ('1', 'luxury', '6/23/22', '1', '1');
+insert into ticket
+values ('2', 'economy', '6/23/22', '1', '2');
+insert into ticket
+values ('3', 'suite', '9/20/22', '2', '3');
+insert into ticket
+values ('4', 'suite', '9/20/22', '2', '4');
+insert into ticket
+values ('5', 'economy', '9/25/22', '3', '5');
+insert into ticket
+values ('6', 'luxury', '10/15/22', '4', '6');
+insert into ticket
+values ('7', 'suite', '10/21/22', '5', '7');
+insert into ticket
+values ('8', 'suite', '10/21/22', '5', '8');
+
 insert into pets
 values ('1', 'Bogey', 'Golden Retriever');
 insert into pets
@@ -236,18 +268,6 @@ insert into pets
 values ('6', 'Bummy', 'Burmese Cat');
 insert into pets
 values ('7', 'Hammy', 'Syrian Hamster');
-
-insert into cruiseship 
-values ('1', 'Princess Cruises', 'Vancouver, BC', 'Vancouver Island, BC');
-insert into cruiseship 
-values ('2', 'Disney Cruise Line', 'Tsawwassen, BC', 'Tsawwassen, BC');
-insert into cruiseship 
-values ('3', 'Viking Cruises', 'Vancouver, BC', 'Vancouver, BC');
-insert into cruiseship 
-values ('4', 'Crystal Cruises', 'Vancouver, BC', 'Bowen Island, BC');
-insert into cruiseship 
-values ('5', 'Klondike Cruises', 'Nanaimo, BC', 'Vancouver, BC');
-
 
 insert into hospitality
 values ('PC1-01', '4', 'double kings', '1');
@@ -295,7 +315,33 @@ insert into activities
 values ('KC5-MOVIE1', '1800', '2000', 'movies', '5');
 
 insert into passengersparticipatein
+values ('PC1-DANCE1', '3');
+insert into passengersparticipatein
+values ('PC1-DANCE2', '3');
+insert into passengersparticipatein
+values ('DCL2-DRAW1', '3');
+insert into passengersparticipatein
 values ('DCL2-SWIM1', '3');
+insert into passengersparticipatein
+values ('VC3-SWIM1', '3');
+insert into passengersparticipatein
+values ('CC4-MNGLF1', '3');
+insert into passengersparticipatein
+values ('KC5-MOVIE1', '3');
+insert into passengersparticipatein
+values ('PC1-DANCE1', '5');
+insert into passengersparticipatein
+values ('PC1-DANCE2', '5');
+insert into passengersparticipatein
+values ('DCL2-DRAW1', '5');
+insert into passengersparticipatein
+values ('DCL2-SWIM1', '5');
+insert into passengersparticipatein
+values ('VC3-SWIM1', '5');
+insert into passengersparticipatein
+values ('CC4-MNGLF1', '5');
+insert into passengersparticipatein
+values ('KC5-MOVIE1', '5');
 insert into passengersparticipatein
 values ('DCL2-SWIM1', '4');
 insert into passengersparticipatein
@@ -316,28 +362,16 @@ values ('CC4-POKE', 'Pokaye', '1000', '2100', '4');
 insert into restaurants
 values ('VC3-EARLS', 'Earls', '1200', '2400', '3');
 
-insert into passengerseatat
+insert into passengerseatat 
 values ('3', 'DCL2-MCD');
-insert into passengerseatat
+insert into passengerseatat 
 values ('4', 'DCL2-MCD');
-insert into passengerseatat
+insert into passengerseatat 
 values ('7', 'KC5-KEG');
-insert into passengerseatat
+insert into passengerseatat 
 values ('8', 'KC5-KEG');
-insert into passengerseatat
+insert into passengerseatat 
 values ('1', 'PC1-TACO');
-
-
-insert into captain
-values ('3', 'Masa', '120000', '1278');
-insert into captain
-values ('4', 'Brian', '160000', '2834');
-insert into captain
-values ('5', 'Alex', '170000', '7263');
-insert into captain
-values ('6', 'Mike', '200000', '4028');
-insert into captain
-values ('7', 'Chris', '110000', '3948');
 
 insert into pilots
 values ('3', '1');
@@ -349,17 +383,16 @@ insert into pilots
 values ('6', '4');
 insert into pilots
 values ('7', '5');
-
-insert into generalstaffsalary
-values ('Housekeeping', '50000');
-insert into generalstaffsalary
-values ('Waiter', '55000');
-insert into generalstaffsalary
-values ('Cook', '70000');
-insert into generalstaffsalary
-values ('Activity Manager', '52000');
-insert into generalstaffsalary
-values ('Janitor', '60000');
+insert into pilots
+values ('18', '1');
+insert into pilots
+values ('19', '2');
+insert into pilots
+values ('20', '3');
+insert into pilots
+values ('21', '4');
+insert into pilots
+values ('25', '5');
 
 insert into generalstaff
 values ('10', 'Jason', 'Housekeeping');
@@ -382,6 +415,8 @@ insert into managehospitalities
 values ('10', 'PC1-01');
 insert into managehospitalities
 values ('10', 'PC1-02');
+insert into managehospitalities
+values ('10', 'KC5-01');
 insert into managehospitalities
 values ('11', 'DCL2-01');
 insert into managehospitalities

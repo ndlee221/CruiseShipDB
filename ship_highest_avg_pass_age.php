@@ -99,6 +99,7 @@
                                                 GROUP BY cr.hullID)";
             $result = executePlainSQL($command);
             printResult($result);
+            oci_commit($db_conn);
             disconnectFromDB();
         }
 

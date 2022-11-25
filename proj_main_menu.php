@@ -20,19 +20,19 @@
 
     <body>
         <h1> Cruise Analyser </h1>
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/add-data.php">
             <h2>Add Data</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
-            <h2>View Data</h2>
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/select-project.php">
+            <h2>Select and Project Data</h2>
         </a>
 
         <a href="https://www.students.cs.ubc.ca/~ngynjsn/user-view.php">
             <h2>View Cruise Information with Ticket Number</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/update_data.php">
             <h2>Update Data</h2>
         </a>
 
@@ -40,7 +40,7 @@
             <h2>Remove Data</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/avgSalary.php">
             <h2>Average salary for each cruise ship</h2>
         </a>
 
@@ -48,11 +48,11 @@
             <h2>Crew members cleaning at least X rooms</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/ship_highest_avg_pass_age.php">
             <h2>Ship with highest average passenger age</h2>
         </a>
 
-        <a href="https://www.students.cs.ubc.ca/~west2020/oracle-sample.php">
+        <a href="https://www.students.cs.ubc.ca/~ngynjsn/done-every-activities.php">
             <h2>Passenger that has done every activity</h2>
         </a>
 </center>

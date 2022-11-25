@@ -29,10 +29,10 @@
     </center>
     <?php
 
+    include 'table_fields.php';
     $success = True;
     $db_conn = NULL;
     $show_debug_alert_messages = False;
-    $numFields = 0;
 
     function debugAlertMessage($message)
     {
@@ -63,8 +63,6 @@
             echo htmlentities($e['message']);
             $success = False;
         }
-
-        echo "<center><br>Successfully modified row!</br></center>";
         return $statement;
     }
 
@@ -100,7 +98,7 @@
             $cond_vars = floor($length / 2);
             $table = substr($_POST['updateDataSubmit'], 12);
             $attrs = getTableFields($table);
-            $currString = "UPDATE $table  ";
+            $currString = "UPDATE $table ";
             $conditionString = " WHERE ";
             $numConditions = 0;
             for ($i = 0; $i < $cond_vars; $i++) {
@@ -139,59 +137,22 @@
                 }
                 $setString = $setString . $attrs[$i] . "=" . "'$value'" . $comma;
             }
-            $command = $currString . $setString . $conditionString;
-            executePlainSQL($command);
+            $cmdstr = $currString . $setString . $conditionString;
+            if (executePlainSQL($cmdstr)) {
+                oci_commit($db_conn);
+                echo "<center><br>Successfully modified row(s)!</br>";
+                echo "Table after modification: ";
+                $after_table_command = "SELECT * FROM $table";
+                $after_table = executePlainSQL($after_table_command);
+                printTable($after_table, $table);
+                echo "</center>";
+            };
             oci_commit($db_conn);
             disconnectFromDB();
         }
     }
-
-    function getTableFields($table)
-    {
-        switch ($table) {
-            case 'ticket':
-                return ["ticketID", "ticketClass", "ticketDate", "hullID", "passengerID"];
-            case 'passengerlocation':
-                return ["postalCode", "city"];
-            case "passengers":
-                return ["passengerID", "passengerName", "age", "postalCode", "passengerAddress"];
-            case "pets":
-                return ["passengerID", "petName", "breed"];
-            case "cruiseship":
-                return ["hullID", "cruiseName", "fromLocation", "toLocation"];
-            case "hospitality":
-                return ["roomNo", "maxCapacity", "roomType", "hullID"];
-            case "passengersstayat":
-                return ["passengerID", "roomNo"];
-            case "activities":
-                return ["stall", "actStart", "actEnd", "activityName", "hullID"];
-            case "passengersparticipatein":
-                return ["passengerID", "stall"];
-            case "restaurants":
-                return ["stall", "restName", "restStart", "restEnd", "hullID"];
-            case "passengerseatat":
-                return ["passengerID", "stall"];
-            case "captain":
-                return ["crewID", "captainName", "salary", "licenseNum"];
-            case "pilots":
-                return ["crewID", "hullID"];
-            case "generalstaffsalary":
-                return ["role", "salary"];
-            case "generalstaff":
-                return ["crewID", "staffName", "staffRole"];
-            case "managehospitalities":
-                return ["crewID", "roomNum"];
-            case "manageactivities":
-                return ["crewID", "stall"];
-            case "managerestaurants":
-                return ["crewID", "stall"];
-        }
-    }
-
-
     function handleTableChangeRequest()
     {
-        global $numFields;
         if (!empty($_POST['tables'])) {
             $selected = $_POST['tables'];
             echo "<center>";
@@ -212,6 +173,13 @@
                 $i++;
             }
             echo "<input value='Update from {$selected}' name='updateDataSubmit' type='submit'></input></form>";
+            if (connectToDB()) {
+                echo "</br> Table before modification: ";
+                $before_table_command = "SELECT * FROM $selected";
+                $before_table = executePlainSQL($before_table_command);
+                printTable($before_table, $selected);
+                disconnectFromDB();
+            }
             echo "</center>";
         }
     }

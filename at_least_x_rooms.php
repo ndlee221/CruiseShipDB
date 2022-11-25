@@ -95,6 +95,7 @@
             $command = "SELECT crewID, count(*) FROM managehospitalities group by crewID having count(*) >= $val";
             $result = executePlainSQL($command);
             printResult($result);
+            oci_commit($db_conn);
             disconnectFromDB();
         }
 

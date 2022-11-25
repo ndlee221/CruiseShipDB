@@ -117,8 +117,9 @@
             echo '<br>';
             echo '<br>';
             echo '<label for="conditions">Input conditions: </label>';
-            echo '<input type="text" id="conditions" name="conditions" placeholder="e.g. age > 20 and hullID = 123456">';
+            echo '<input type="text" id="conditions" name="conditions" placeholder="e.g. age > 20 and passengerName = \'Jason\'">';
             echo '<br>';
+            echo "USE SINGLE QUOTES FOR STRINGS!";
             echo '<br>';
             echo '<input type="hidden" name="table" value="' . $_POST['table'] . '">';
             echo '<input type="submit" name="querySubmit" form="queryform">';

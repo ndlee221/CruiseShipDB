@@ -82,10 +82,10 @@
 
         function printResult($result) { //prints results from a select statement
             echo '<table>';
-            echo "<tr><th>passengerID</th></tr>";
+            echo "<tr><th>passengerID</th><th>PassengerName</th></tr>";
 
             while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
-                echo "<tr><td>" . $row["PASSENGERID"] . "</td></tr>"; //or just use "echo $row[0]"
+                echo "<tr><td>" . $row["PASSENGERID"] . "</td><td>" . $row["PASSENGERNAME"] . "</td></tr>"; //or just use "echo $row[0]"
             }
 
             echo "</table>";
@@ -94,7 +94,7 @@
         function handleRequest() {
             global $db_conn;
 
-            $result = executePlainSQL("SELECT p.passengerID 
+            $result = executePlainSQL("SELECT p.passengerID, p.passengerName
                                     FROM Passengers p
                                     WHERE NOT EXISTS (SELECT a.stall
                                                         FROM Activities a
@@ -105,6 +105,7 @@
                                     ");
 
             printResult($result);
+            oci_commit($db_conn);
         }
 
         if (connectToDB()) {

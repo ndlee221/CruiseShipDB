@@ -136,6 +136,7 @@
                                             FROM Ticket t, Restaurants r
                                             WHERE t.ticketID = '$ticketID' AND t.hullID = r.hullID");
             printResult($passengerInfo, $activities, $restaurants);
+            oci_commit($db_conn);
             disconnectFromDB();
         }
     }

@@ -29,6 +29,7 @@
     </center>
     <?php
 
+    include 'table_fields.php';
     $success = True;
     $db_conn = NULL;
     $show_debug_alert_messages = False;
@@ -61,9 +62,8 @@
             $e = oci_error($statement); // For OCIExecute errors pass the statementhandle
             echo htmlentities($e['message']);
             $success = False;
-        } else {
-            echo "<center><br>Successfully deleted row!</br></center>";
         }
+
         return $statement;
     }
 
@@ -95,145 +95,74 @@
     {
         if (connectToDB()) {
             global $db_conn, $success;
-            foreach ($_POST as $elem) {
-                if ($elem !== $_POST['id1'] && $elem !== $_POST['id2']) {
-                    $table = substr($elem, 12); // "Remove from <TABLENAME>"
+            $cond_vars = count($_POST) - 1;
+            $table = substr($_POST['removeDataSubmit'], 12);
+            $attrs = getTableFields($table);
+            $cmdstr = "DELETE FROM $table WHERE ";
+            $conditionString = "";
+            $numConditions = 0;
+            for ($i = 0; $i < $cond_vars; $i++) {
+                if ($_POST[$i] != '') {
+                    $numConditions++;
                 }
+                ;
             }
-            $id1 = $_POST['id1'];
-            $id2 = $_POST['id2'];
-            [$key1, $key2] = getTableKeys($table);
-            if ($key1 && $key2) {
-                $cmdstr = "DELETE FROM $table WHERE $key1 = '$id1' AND $key2 = '$id2'";
-            } else {
-                $cmdstr = "DELETE FROM $table WHERE $key1 = '$id1'";
+            ;
+            for ($i = 0; $i < $cond_vars; $i++) {
+                $value = $_POST[$i];
+                if ($value == "") {
+                    continue;
+                }
+                ;
+                $and = "";
+                if ($numConditions > 1) {
+                    $and = " AND ";
+                    $numConditions--;
+                }
+                $conditionString = $conditionString . $attrs[$i] . "=" . "'$value'" . $and;
             }
-            executePlainSQL($cmdstr);
-            oci_commit($db_conn);
+            $cmdstr = $cmdstr . $conditionString;
+            if (executePlainSQL($cmdstr)) {
+                oci_commit($db_conn);
+                echo "<center><br>Successfully deleted row(s)!</br>";
+                echo "Table after deletion: ";
+                $after_table_command = "SELECT * FROM $table";
+                $after_table = executePlainSQL($after_table_command);
+                printTable($after_table, $table);
+                echo "</center>";
+            };
             disconnectFromDB();
         }
     }
-
-    function getTableKeys($table)
-    {
-        switch ($table) {
-            case 'ticket':
-                return ["ticketID"];
-            case 'passengerlocation':
-                return ["postalCode"];
-            case "passengers":
-                return ["passengerID"];
-            case "pets":
-                return ["passengerID", "petName"];
-            case "cruiseship":
-                return ["hullID"];
-            case "hospitality":
-                return ["roomNo"];
-            case "passengersstayat":
-                return ["passengerID", "roomNo"];
-            case "activities":
-                return ["stall"];
-            case "passengersparticipatein":
-                return ["passengerID", "stall"];
-            case "restaurants":
-                return ["stall"];
-            case "passengerseatat":
-                return ["passengerID", "stall"];
-            case "captain":
-                return ["crewID"];
-            case "pilots":
-                return ["crewID", "hullID"];
-            case "generalstaffsalary":
-                return ["role"];
-            case "generalstaff":
-                return ["crewID"];
-            case "managehospitalities":
-                return ["crewID", "roomNum"];
-            case "manageactivities":
-                return ["crewID", "stall"];
-            case "managerestaurants":
-                return ["crewID", "stall"];
-        }
-    }
-
 
     function handleTableChangeRequest()
     {
         if (!empty($_POST['tables'])) {
             $selected = $_POST['tables'];
-            $GLOBALS['table'] = $selected;
             echo "<center>";
-            echo "<h2 id='table'>";
+            echo "<form method='POST'>";
+            echo "<center>";
+            echo "<h2 id='table'>Deleting from ";
             echo $selected;
             echo "</h2>";
             echo "<form method='POST'>";
-            switch ($selected) {
-                case 'ticket':
-                    echo "ticketID: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case 'passengerlocation':
-                    echo "postalCode: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "passengers":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "pets":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
-                    echo "petName: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "cruiseship":
-                    echo "hullID: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "hospitality":
-                    echo "roomNo: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "passengersstayat":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
-                    echo "roomNo: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "activities":
-                    echo "stall: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "passengersparticipatein":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
-                    echo "stall: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "restaurants":
-                    echo "stall: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "passengerseatat":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
-                    echo "stall: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "captain":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "pilots":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    echo "hullID: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "generalstaffsalary":
-                    echo "role: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "generalstaff":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    break;
-                case "managehospitalities":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    echo "roomNum: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "manageactivities":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    echo "stall: <input type='text' name='id2'> <br /><br />";
-                    break;
-                case "managerestaurants":
-                    echo "crewID: <input type='text' name='id1'> <br /><br />";
-                    echo "stall: <input type='text' name='id2'> <br /><br />";
-                    break;
+            $table_fields = getTableFields($selected);
+            $i = 0;
+            echo "CONDITIONS: <br/>";
+            foreach ($table_fields as $field) {
+                echo "$field: <input type='text' name='$i'> <br /><br />";
+                $i++;
             }
+            echo "<input value='Remove from {$selected}' name='removeDataSubmit' type='submit'></input></form>";
+            if (connectToDB()) {
+                echo "</br> Table before deletion: ";
+                $before_table_command = "SELECT * FROM $selected";
+                $before_table = executePlainSQL($before_table_command);
+                printTable($before_table, $selected);
+                disconnectFromDB();
+            }
+            echo "</center>";
         }
-        echo "<input value='Remove from {$selected}' name='removeDataSubmit' type='submit'></input></form>";
-        echo "</center>";
     }
 
     if (isset($_POST['changeTableSubmit'])) {
