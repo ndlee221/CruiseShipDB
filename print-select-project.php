@@ -72,9 +72,7 @@ function printResult($result, $num_projected_attributes) {
     while ($row = OCI_Fetch_Array($result, OCI_BOTH)) {
         echo '<tr>';
         for ($i = 0; $i < $num_projected_attributes; $i++) {
-            echo "<td>";
-            echo $row[$i];
-            echo "</td>";
+            echo "<td>" . $row[$i] . "</td>";
         }
         echo '</tr>';
     }
@@ -87,14 +85,20 @@ function selectQuery() {
     $select_clause = "SELECT ";
     $num_projected_attributes = count($projected_attributes);
     for($i = 0; $i < $num_projected_attributes; $i++) {
-        if ($i == ($num_projected_attributes - 1)) {
+        if ($i === ($num_projected_attributes - 1)) {
             $select_clause = $select_clause . $projected_attributes[$i];
         } else {
-            $selected_clause = $selected_clause . $projected_attributes[$i] . ', ';
+            $select_clause = $select_clause . $projected_attributes[$i] . ', ';
         }
     };
     $from_clause = 'FROM ' . $_POST["table"];
-    $result = executePlainSQL("");
+    $where_clause = NULL;
+    if (empty($_POST["conditions"])) {
+        $where_clause = '';
+    } else {
+        $where_clause = 'WHERE ' . $_POST["conditions"];
+    }
+    $result = executePlainSQL($select_clause . ' ' . $from_clause . ' ' . $where_clause);
     printResult($result, $num_projected_attributes);
 }
 
