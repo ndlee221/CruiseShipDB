@@ -32,22 +32,6 @@
 		</center>
 
 
-
-		<h2>Insert Values into Passenger table</h2>
-		<form method="POST" action="add-data.php"> <!--refresh page when submitted-->
-			<intput type="hidden" id="insertQueryRequest" name="insertQueryRequest">
-			PassengerID: <input type="text" name="insPID"> <br /><br />
-			Name: <input type="text" name="insName"> <br /><br />
-			Age: <input type="text" name="insAge"> <br /><br />
-			Postal: <input type="text" name="insPostal"> <br /><br />
-			Address: <input type="text" name="insAddy"> <br /><br />
-			City: <input type="text" name="insCity"> <br /><br />
-			
-			<input type="submit" value="Insert" name="insertSubmit"></p>
-		</form>
-		
-		<hr />
-
 	<?php
 		//this tells the system that it's no longer just parsing html; it's now parsing PHP
 
@@ -85,8 +69,7 @@
                     //echo "<br>".$bind."<br>";
                     OCIBindByName($statement, $bind, $val);
                     unset ($val); //make sure you do not remove this. Otherwise $val will remain in an array object wrapper which will not be recognized by Oracle as a proper datatype
-				}
-
+				}   
                 $r = OCIExecute($statement, OCI_DEFAULT);
                 if (!$r) {
                     echo "<br>Cannot execute the following command: " . $cmdstr . "<br>";
@@ -94,6 +77,10 @@
                     echo htmlentities($e['message']);
                     echo "<br>";
                     $success = False;
+                } else {
+                    echo "<center>";
+                    echo "Sucessfully inserted tuple into table";
+                    echo "</center>";
                 }
             }
         }
@@ -104,7 +91,7 @@
 
             // Your username is ora_(CWL_ID) and the password is a(student number). For example,
 			// ora_platypus is the username and a12345678 is the password.
-            $db_conn = OCILogon("ora_ndlee221", "a13349634", "dbhost.students.cs.ubc.ca:1522/stu");
+            $db_conn = OCILogon("ora_ngynjsn", "a11170081", "dbhost.students.cs.ubc.ca:1522/stu");
 
             if ($db_conn) {
                 debugAlertMessage("Database is Connected");
@@ -125,39 +112,26 @@
         }
 
 
-	 function handleInsertRequest() {
-            global $db_conn;
-
-            //Getting the values from user and insert data into the table
-            $tuple = array (
-                ":bind1" => $_POST['insNo'],
-                ":bind2" => $_POST['insName']
-            );
-
-            $alltuples = array (
-                $tuple
-            );
-
-            executeBoundSQL("insert into demoTable values (:bind1, :bind2)", $alltuples);
-            OCICommit($db_conn);
-        }
-
-
-	// HANDLE ALL POST ROUTES
-	// A better coding practice is to have one method that reroutes your requests accordingly. It will make it easier to add/remove functionality.
-        function handlePOSTRequest() {
+	 function insertPassengers() {
             if (connectToDB()) {
-                if (array_key_exists('resetTablesRequest', $_POST)) {
-                    
-                } else if (array_key_exists('updateQueryRequest', $_POST)) {
-                    
-                } else if (array_key_exists('insertQueryRequest', $_POST)) {
-                    handleInsertRequest();
-                }
-
+                global $db_conn;
+                //Getting the values from user and insert data into the table
+                $tuple = array (
+                    ":bind1" => $_POST['insPID'],
+                    ":bind2" => $_POST['insName'],
+                    ":bind3" => $_POST['insAge'],
+                    ":bind4" => $_POST['insPostal'],
+                    ":bind5" => $_POST['insAddy']
+                );
+                $alltuples = array (
+                    $tuple
+                );
+                executeBoundSQL("insert into passengers values (:bind1, :bind2, :bind3, :bind4, :bind5)", $alltuples);
+                OCICommit($db_conn);
                 disconnectFromDB();
             }
         }
+
 
 	
 	   function handleTableChangeRequest() {
@@ -172,12 +146,19 @@
             switch ($selected) {
                 case 'ticket':
                     echo "ticketID: <input type='text' name='id1'> <br /><br />";
+
+                    
                     break;
                 case 'passengerlocation':
                     echo "postalCode: <input type='text' name='id1'> <br /><br />";
                     break;
                 case "passengers":
-                    echo "passengerID: <input type='text' name='id1'> <br /><br />";
+                    echo "PassengerID: <input type='text' name='insPID'> <br /><br />";
+			        echo "Name: <input type='text' name='insName'> <br /><br />";
+			        echo "Age: <input type='text' name='insAge'> <br /><br />";
+			        echo "Postal: <input type='text' name='insPostal'> <br /><br />";
+			        echo "Address: <input type= 'text' name='insAddy'> <br /><br />";
+                    echo "<input value='Insert into {$selected}' name='insertPassengers' type='submit'></input></form>";
                     break;
                 case "pets":
                     echo "passengerID: <input type='text' name='id1'> <br /><br />";
@@ -234,16 +215,19 @@
                     break;
             }
         }
-        echo "<input value='Remove from {$selected}' name='removeDataSubmit' type='submit'></input></form>";
+        
         echo "</center>";
        }
 	
 
-	if (isset($_POST['insertSubmit'])) {
-            handlePOSTRequest();
+	if (isset($_POST['a'])) {
+            
         } else if (isset($_POST['changeTableSubmit'])) {
-		handleTableChangeRequest();
-	  }
+		    handleTableChangeRequest();
+	    } else if (isset($_POST['insertPassengers'])) {
+            insertPassengers();
+        }
+
 		?>
 	</body>
 </html>
